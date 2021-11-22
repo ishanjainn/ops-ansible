@@ -1,0 +1,19 @@
+- name: Deploy ArgoCD
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Deploy ArgoCD
+      community.kubernetes.helm:
+        release_name: argocd
+        chart_repo_url: https://argoproj.github.io/argo-helm
+        chart_ref: argo-cd
+        release_namespace: "{{ argocd_namespace }}"
+        create_namespace: true
+        release_values:
+          configs:
+            credentialTemplates:
+             https-creds:
+               url: https://github.com/ishanjainn/ops-ansible
+               username: "{{ vault_github_username }}"
+               password: "{{ vault_github_user_password }}"
