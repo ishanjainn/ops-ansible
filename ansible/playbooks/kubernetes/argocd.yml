@@ -12,8 +12,26 @@
         create_namespace: true
         release_values:
           configs:
-            credentialTemplates:
-             https-creds:
+            repositories:
+             gitops-repo:
                url: https://github.com/ishanjainn/gitops
                username: "{{ vault_github_username }}"
                password: "{{ vault_github_user_password }}"
+          server:
+            additionalApplications:
+               - name: main-app
+                 namespace: argocd
+                 project: default
+                 source:
+                   repoURL: https://github.com/ishanjainn/gitops
+                   path: argocd/releases/beta/
+                   targetRevision: HEAD
+                   directory:
+                     recurse: true
+                 destination:
+                   server: https://kubernetes.default.svc
+                   namespace: argocd
+                 syncPolicy:
+                   automated:
+                     prune: false
+                     selfHeal: false
